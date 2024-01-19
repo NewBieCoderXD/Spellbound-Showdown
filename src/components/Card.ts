@@ -1,4 +1,11 @@
-export interface Card {
+import { Game } from "../game/Game";
+import { CardElement } from "./CardElement";
+import Player from "./Player";
+
+export default interface Card {
     name: string,
-    IsActivated: boolean,
+    description: string,
+    element: CardElement,
+    cost: number,
+    effect: (game: Game)=>void
 }
