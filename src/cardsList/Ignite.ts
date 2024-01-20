@@ -9,8 +9,8 @@ class Ignite extends Card {
     description = "สร้างความเสียหาย 3 แต้ม ไม่สามารถถูกลดความเสียหายได้";
     element = CardElement.fire;
     cost = 1;
-    owner=null;
-    place=null;
+    owner=undefined;
+    place=undefined;
     CanBeCancelled=true;
     CanBeReduced=false;
     damageIncrease=0;
