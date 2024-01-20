@@ -9,6 +9,7 @@ class Ignite extends Card {
     description = "สร้างความเสียหาย 3 แต้ม ไม่สามารถถูกลดความเสียหายได้";
     element = CardElement.fire;
     cost = 1;
+    originalCost = 1;
     owner=undefined;
     place=undefined;
     CanBeCancelled=true;
@@ -32,6 +33,9 @@ class Ignite extends Card {
     }
 
     effectPersistent(game: Game, requestBody: CardRequest){
+        ;
+    }
+    effectCancelPersistent(game: Game, requestBody: CardRequest){
         ;
     }
 }

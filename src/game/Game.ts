@@ -18,8 +18,8 @@ export class Game {
     
     room: Room;
     players: Array<Player>;
-    deck: Array<Card>;
-    discardDeck: Array<Card>;
+    deck: Stack<Card>;
+    discardDeck: Stack<Card>;
 
 
 }

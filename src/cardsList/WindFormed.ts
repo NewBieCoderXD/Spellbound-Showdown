@@ -5,11 +5,12 @@ import CardRequest from "../components/CardRequest";
 import { Game } from "../game/Game";
 import { CardPlace } from "../components/CardPlace";
 
-class Ignite extends Card {
+class WindFormed extends Card {
     name = "สายลมก่อตัว";
     description = "สร้างความเสียหาย 1 แต้ม นำการ์ดนี้ลงพื้นที่พิธีกรรมของคุณในสภาพSlowdown ทำพิธีหรือลิงก์(ธรรมชาติ): สร้างความเสียหาย 3 แต้มและได้รับพลังชีวิต 2 แต้มแทน";
     element = CardElement.neutral;
     cost = 1;
+    originalCost = 1;
     owner:Player|undefined=undefined;
     place: CardPlace | undefined=undefined;
     CanBeCancelled=true;
@@ -57,6 +58,9 @@ class Ignite extends Card {
     }
 
     effectPersistent(game: Game, requestBody: CardRequest){
+        ;
+    }
+    effectCancelPersistent(game: Game, requestBody: CardRequest){
         ;
     }
 }
