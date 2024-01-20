@@ -6,18 +6,11 @@ import {maxRoomNumber, port} from "./config"
 import { Game } from "./game/Game";
 import "./routes/api/api"
 import app from "./app";
-// import { apiRouter } from "./routes/api/api";
+import { Room } from "./game/Room";
 // import * as dotenv from "dotenv"
 
-export interface room{
-    roomId:string,
-    roomName: string,
-    roomPassword: string,
-    roomOwner: string,
-    players:Array<Player>,
-    
-}
-export const rooms: Array<room|null> = new Array(maxRoomNumber).fill(null);
+
+export const rooms: Array<Room|null> = new Array(maxRoomNumber).fill(null);
 app.listen(port,()=>{
     console.log("server is on",port);
 });
