@@ -77,9 +77,10 @@ apiRouter.post("/join",(req:Request,res:Response)=>{
         return;
     }
     res.json(errJSON)
-    
 })
 
 apiRouter.ws("/websocket",(websocket:ws,req:Request)=>{
-    websocket.send("gg");
+    websocket.addEventListener("message",(msg)=>{
+        
+    })
 })

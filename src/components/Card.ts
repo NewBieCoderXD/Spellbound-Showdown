@@ -21,8 +21,8 @@ export default abstract class Card {
     abstract description: string;
     abstract element: CardElement;
     abstract cost: number;
-    abstract owner: Player | null;
-    abstract place: CardPlace | null;
+    abstract owner: Player | undefined;
+    abstract place: CardPlace | undefined;
     abstract CanBeCancelled:boolean;
     abstract CanBeReduced:boolean;
     damageIncrease=0;
@@ -30,5 +30,8 @@ export default abstract class Card {
     abstract effectPersistent(game: Game,requestBody: any): void;
     attack(targetPlayer: Player, damage:number): void{
         targetPlayer.hp-=damage;
+    }
+    heal(targetPlayer: Player, restore:number): void{
+        targetPlayer.hp+=restore;
     }
 }

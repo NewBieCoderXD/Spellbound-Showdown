@@ -3,20 +3,27 @@ import { CardElement } from "../components/CardElement";
 import Player from "../components/Player";
 import CardRequest from "../components/CardRequest";
 import { Game } from "../game/Game";
+import { CardPlace } from "../components/CardPlace";
 
 class Ignite extends Card {
-    name = "Ignite";
-    description = "Deal 3 damage. Damage can't be reduced.";
-    element = CardElement.fire;
+    name = "สายลมก่อตัว";
+    description = "สร้างความเสียหาย 1 แต้ม นำการ์ดนี้ลงพื้นที่พิธีกรรมของคุณในสภาพSlowdown ทำพิธีหรือลิงก์(ธรรมชาติ): สร้างความเสียหาย 3 แต้มและได้รับพลังชีวิต 2 แต้มแทน";
+    element = CardElement.neutral
     cost = 1;
-    owner=null;
-    place=null;
+    owner:Player|undefined=undefined;
+    place: CardPlace | undefined=undefined;
     CanBeCancelled=true;
-    CanBeReduced=false;
+    CanBeReduced=true;
     damageIncrease=0;
+    assign(){
+        this.owner=new Player("",0,2,[],[],[],2);
+    }
     async effect(game: Game, requestBody: CardRequest){
-        let damage = 3+this.damageIncrease;
+        let damage = 1+ this.damageIncrease;
+        let damageRitual = 3+ this.damageIncrease;
+        let restore = 2;
         let targetPlayer = requestBody.targetPlayer;
+
         if(targetPlayer==null){
             return false;
         }
@@ -26,8 +33,27 @@ class Ignite extends Card {
         }
         if(result.isReduced){
             damage=Math.max(damage-result.reduce,0);
+            damageRitual=Math.max(damageRitual-result.reduce,0);
         }
-        this.attack(targetPlayer,damage)
+
+        switch(this.place!){
+            case(CardPlace.playerHand):{ // Normal Play
+                if(this.owner!.stack.){ // if Link(Neutral)
+
+                }
+                this.attack(targetPlayer,damage);
+                this.owner!.putToField(this);
+                break;
+            }
+            case(CardPlace.playerField):{ // Ritual Play
+                this.attack(targetPlayer,damageRitual);
+                this.heal(this.owner!,restore);
+                break;
+            }
+            default:{
+                return false;
+            }
+        }
         return true;
     }
 

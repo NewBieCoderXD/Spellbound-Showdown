@@ -1,13 +1,14 @@
 import Card from "../components/Card";
 import Player from "../components/Player";
+import { Stack } from "../utils/Stack";
 import { Room } from "./Room";
 
 export class Game {
     constructor(
         room: Room,
         players: Array<Player>,
-        deck: Array<Card>,
-        discardDeck: Array<Card>
+        deck: Stack<Card>,
+        discardDeck: Stack<Card>
     ) {
         this.room = room
         this.players = players

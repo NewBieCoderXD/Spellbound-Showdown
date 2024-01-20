@@ -2,6 +2,8 @@ import { Room } from "../game/Room";
 import Card from "./Card";
 import * as ws from "ws";
 import { CardPlace } from "./CardPlace";
+import { removeFromList } from "../utils/util";
+import { Stack } from "../utils/Stack";
 
 export default class Player{
   private _name!: string;
@@ -9,7 +11,7 @@ export default class Player{
   private _actions!: number;
   private _hands!: Array<Card>;
   private _field!: Array<Card>;
-  private _stack!: Array<Card>;
+  private _stack!: Stack<Card>;
   private _playerId!: number;
   private _room?: Room;
   private _websocket?: WebSocket;
@@ -99,28 +101,52 @@ export default class Player{
    * @description Move played card from hand or field to stack.
   */
   public playToStack (card: Card): void {
-    let cardIndex: number;
+    let IsFromStack = false;
     switch(card.place){
       case(CardPlace.playerHand):{
-        cardIndex = this.hands.indexOf(card);
+        removeFromList(this.hands,card);
         break;
       }
       case(CardPlace.playerField):{
-        cardIndex = this.field.indexOf(card);
+        removeFromList(this.field,card);
         break;
       }
       default:{
-        cardIndex = -1;
+        IsFromStack=true;
       }
     }
-    if(cardIndex !== -1){
-      this.hands.splice(cardIndex, 1);
+    if(!IsFromStack){
       card.place = CardPlace.playerStack;
       this.stack.push(card);
-    }else{
+    }
+    else{
       console.log(`Can't do. Card ${card.name} not found in hand or field.`);
     }
   }
+
+  public putToField (card: Card): void {
+    let IsFromField = false;
+    switch(card.place){
+      case(CardPlace.playerHand):{
+        removeFromList(this.hands,card);
+        break;
+      }
+      case(CardPlace.playerStack):{
+        removeFromList(this.stack,card);
+        break;
+      }
+      default:{
+        IsFromField=true;
+      }
+    }
+    if(!IsFromField){
+      card.place = CardPlace.playerField;
+      this.field.push(card);
+    }
+    else{
+      console.log(`Can't do. Card ${card.name} not found in hand or field.`);
+    }
+}
 
   
   IsDead(){

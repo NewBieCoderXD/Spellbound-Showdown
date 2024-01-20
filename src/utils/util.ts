@@ -1,3 +1,4 @@
+import Card from "../components/Card";
 import { Room } from "../game/Room";
 
 export function generateRoomId(rooms: Array<Room|null>): number|null{
@@ -7,4 +8,11 @@ export function generateRoomId(rooms: Array<Room|null>): number|null{
         }
     }
     return null;
+}
+
+export function removeFromList(list: Array<Card>, card: Card){
+    let cardIndex = list.indexOf(card);
+    if(cardIndex !== -1){
+        list.splice(cardIndex, 1);
+    }
 }

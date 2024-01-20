@@ -1,5 +1,7 @@
 export enum CardPlace {
     deck,
-    player,
+    playerHand,
+    playerField,
+    playerStack,
     discardDeck,
 }
