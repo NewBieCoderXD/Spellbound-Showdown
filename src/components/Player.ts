@@ -22,7 +22,7 @@ export default class Player{
     actions: number,
     hands: Array<Card>,
     field: Array<Card>,
-    stack: Array<Card>,
+    stack: Stack<Card>,
     playerId: number
   ){
     this.name=name;
@@ -76,10 +76,10 @@ export default class Player{
     this._field = value;
   }
 
-  public get stack(): Array<Card> {
+  public get stack(): Stack<Card> {
     return this._stack;
   }
-  public set stack(value: Array<Card>) {
+  public set stack(value: Stack<Card>) {
     this._stack = value;
   }
 
