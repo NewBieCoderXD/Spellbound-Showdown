@@ -1,5 +1,7 @@
 import { Room } from "../game/Room";
 import Card from "./Card";
+import * as ws from "ws";
+import { CardPlace } from "./CardPlace";
 
 export default class Player{
   private _name!: string;
@@ -10,6 +12,7 @@ export default class Player{
   private _stack!: Array<Card>;
   private _playerId!: number;
   private _room?: Room;
+  private _websocket?: WebSocket;
 
   constructor(
     name: string,
@@ -27,6 +30,17 @@ export default class Player{
     this.field=field;
     this.stack=stack;
     this.playerId=playerId;
+  }
+
+  public async waitQuickCard(targetPlayer:Player,CanBeCancelled:boolean,CanBeReduced:boolean){
+    return new Promise((resolve,reject)=>{
+      this.websocket!.addEventListener("message",(msg)=>{
+        let response = JSON.parse(msg.data.toString());
+        if(response.type=="quick"){
+          validQuick(response,CanBeCancelled,CanBeReduced);
+        }
+      })
+    });
   }
 
 	public get hp(): number  {
@@ -82,17 +96,29 @@ export default class Player{
   }
 
   /**
-   * @description Move played card from hand to stack.
+   * @description Move played card from hand or field to stack.
   */
-  public handToStack (card: Card): void {
-    const cardIndex = this.hands.indexOf(card);
+  public playToStack (card: Card): void {
+    let cardIndex: number;
+    switch(card.place){
+      case(CardPlace.playerHand):{
+        cardIndex = this.hands.indexOf(card);
+        break;
+      }
+      case(CardPlace.playerField):{
+        cardIndex = this.field.indexOf(card);
+        break;
+      }
+      default:{
+        cardIndex = -1;
+      }
+    }
     if(cardIndex !== -1){
       this.hands.splice(cardIndex, 1);
-      //! debug
-      //! card.place = deck
+      card.place = CardPlace.playerStack;
       this.stack.push(card);
     }else{
-      console.log(`Can't do. Card ${card.name} not found in hand.`);
+      console.log(`Can't do. Card ${card.name} not found in hand or field.`);
     }
   }
 
@@ -107,5 +133,12 @@ export default class Player{
     }
     public set room(value: Room | undefined) {
       this._room = value;
+    }
+
+    public get websocket(): ws | undefined {
+      return this._websocket;
+    }
+    public set websocket(value: ws | undefined) {
+      this._websocket = value;
     }
 }

@@ -9,7 +9,6 @@ import app from "./app";
 import { Room } from "./game/Room";
 // import * as dotenv from "dotenv"
 
-
 export const rooms: Array<Room|null> = new Array(maxRoomNumber).fill(null);
 app.listen(port,()=>{
     console.log("server is on",port);
