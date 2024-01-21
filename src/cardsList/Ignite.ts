@@ -4,13 +4,13 @@ import Player from "../components/Player";
 import CardRequest from "../components/CardRequest";
 import { Game } from "../game/Game";
 
-class Ignite extends Card {
+export class Ignite extends Card {
+    costDiff = 0;
     name = "จุดไฟ";
     description = "สร้างความเสียหาย 3 แต้ม ไม่สามารถถูกลดความเสียหายได้";
     element = CardElement.fire;
     cost = 1;
-    originalCost = 1;
-    owner=undefined;
+    owner:Player|undefined=undefined;
     place=undefined;
     CanBeCancelled=true;
     CanBeReduced=false;
@@ -21,15 +21,16 @@ class Ignite extends Card {
         if(targetPlayer==null){
             return false;
         }
-        let result = await targetPlayer.waitQuickCard(targetPlayer,CanBeCancelled,CanBeReduced);
-        if(result.isCancelled){
-            return true;
-        }
-        if(result.isReduced){
-            damage=Math.max(damage-result.reduce,0);
-        }
-        this.attack(targetPlayer,damage)
         return true;
+        // let result = await targetPlayer.waitQuickCard(targetPlayer,CanBeCancelled,CanBeReduced);
+        // if(result.isCancelled){
+        //     return true;
+        // }
+        // if(result.isReduced){
+        //     damage=Math.max(damage-result.reduce,0);
+        // }
+        // this.attack(targetPlayer,damage)
+        // return true;
     }
 
     effectPersistent(game: Game, requestBody: CardRequest){

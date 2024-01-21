@@ -4,6 +4,7 @@ import * as ws from "ws";
 import { CardPlace } from "./CardPlace";
 import { removeFromList } from "../utils/util";
 import { Stack } from "../utils/Stack";
+import { loadDeck } from "../deck/deckLoader";
 
 export default class Player{
   private _name!: string;
@@ -34,16 +35,16 @@ export default class Player{
     this.playerId=playerId;
   }
 
-  public async waitQuickCard(targetPlayer:Player,CanBeCancelled:boolean,CanBeReduced:boolean){
-    return new Promise((resolve,reject)=>{
-      this.websocket!.addEventListener("message",(msg)=>{
-        let response = JSON.parse(msg.data.toString());
-        if(response.type=="quick"){
-          validQuick(response,CanBeCancelled,CanBeReduced);
-        }
-      })
-    });
-  }
+  // public async waitQuickCard(targetPlayer:Player,CanBeCancelled:boolean,CanBeReduced:boolean){
+  //   return new Promise((resolve,reject)=>{
+  //     this.websocket!.addEventListener("message",(msg)=>{
+  //       let response = JSON.parse(msg.data.toString());
+  //       if(response.type=="quick"){
+  //         validQuick(response,CanBeCancelled,CanBeReduced);
+  //       }
+  //     })
+  //   });
+  // }
 
 	public get hp(): number  {
 		return this._hp;
@@ -97,6 +98,13 @@ export default class Player{
     this._playerId = value;
   }
 
+  public drawCards(numberOfCards: number){
+    if(numberOfCards<=0){
+      throw new Error("negative or zero number of cards");
+    }
+    this.hands.concat(this.room?.game.deck.pickLast(numberOfCards)!,this.hands);
+  }
+
   /**
    * @description Move played card from hand or field to stack.
   */
@@ -132,7 +140,7 @@ export default class Player{
         break;
       }
       case(CardPlace.playerStack):{
-        removeFromList(this.stack,card);
+        removeFromList(this.stack.store,card);
         break;
       }
       default:{
@@ -161,10 +169,10 @@ export default class Player{
       this._room = value;
     }
 
-    public get websocket(): ws | undefined {
+    public get websocket(): WebSocket | undefined {
       return this._websocket;
     }
-    public set websocket(value: ws | undefined) {
+    public set websocket(value: WebSocket) {
       this._websocket = value;
     }
 }

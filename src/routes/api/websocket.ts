@@ -6,9 +6,12 @@ import { generateRoomId } from "../../utils/util";
 import Player from "../../components/Player";
 import { maxRoomNumber, roomPlayerCapacity } from "../../config";
 import { Room } from "../../game/Room";
+import { Stack } from "../../utils/Stack";
+import { wsMessageEvent } from "../../websocket/wsMessageEvent";
+import { joinWebsocket } from "../../websocket/joinWebsocket";
 
 function createPlayer(playerName:string,playerId:number,room: Room){
-    let player = new Player(playerName,room.roomInitHp,room.roomActionsPerTurn,[],[],[],playerId);
+    let player = new Player(playerName,room.roomInitHp,room.roomActionsPerTurn,[],[],new Stack(),playerId);
     player.room=room;
     return player;
 }
@@ -50,37 +53,43 @@ apiRouter.post("/createRoom",(req:Request,res:Response)=>{
     })
 })
 
-apiRouter.post("/join",(req:Request,res:Response)=>{
-    let errJSON = {
-        success:false
-    }
-    let roomId = req.body.roomId as number;
-    if(isNaN(roomId) || roomId>=maxRoomNumber || roomId<0){
-        res.json(errJSON)
-        return;
-    }
-    let room = rooms[roomId];
-    if(room==null){
-        res.json(errJSON)
-        return;
-    }
-    if(room?.players.length<roomPlayerCapacity){
-        let player = createPlayer(
-            req.body.playerName,
-            room?.players.length,
-            room
-        );
-        room.addPlayer(player);
-        res.json({
-            success:true
-        })
-        return;
-    }
-    res.json(errJSON)
-})
+// apiRouter.post("/join",(req:Request,res:Response)=>{
+//     let errJSON = {
+//         success:false
+//     }
+//     let roomId = req.body.roomId as number;
+//     if(isNaN(roomId) || roomId>=maxRoomNumber || roomId<0){
+//         res.json(errJSON)
+//         return;
+//     }
+//     let room = rooms[roomId];
+//     if(room==null){
+//         res.json(errJSON)
+//         return;
+//     }
+//     if(room?.game.players.length<roomPlayerCapacity){
+//         let player = createPlayer(
+//             req.body.playerName,
+//             room?.game.players.length,
+//             room
+//         );
+//         room.addPlayer(player);
+//         res.json({
+//             success:true
+//         })
+//         return;
+//     }
+//     res.json(errJSON)
+// })
 
 apiRouter.ws("/websocket",(websocket:ws,req:Request)=>{
     websocket.addEventListener("message",(msg)=>{
-        
+        let wsMessage = JSON.parse(msg.data.toString());
+        *note to self: migrate to events emitter
+        switch(wsMessage.type){
+            case(wsMessageEvent.join): 
+                joinWebsocket(websocket)
+                break;
+        }
     })
 })
