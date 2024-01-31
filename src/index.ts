@@ -7,12 +7,18 @@ import {maxRoomNumber, port} from "./config"
 // import app from "./app";
 import { Room } from "./game/Room";
 import "./routes/api/api"
-import { loadDeck } from "./deck/deckLoader";
+import { loadDeck, setupDeck } from "./deck/deckLoader";
+import app from "./app";
 // import * as dotenv from "dotenv"
 
 
 
 export const rooms: Array<Room|null> = new Array(maxRoomNumber).fill(null);
-// app.listen(port,()=>{
-//     console.log("server is on",port);
-// });
+
+async function main(){
+    await setupDeck();
+    app.listen(port,()=>{
+        console.log("server is on",port);
+    });
+}
+main();

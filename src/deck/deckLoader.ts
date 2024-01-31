@@ -5,7 +5,7 @@ import * as path from "path"
 import { shuffleDeck } from "./shuffleDeck";
 
 let deck: Stack<Card> | undefined;
-export async function loadDeck(){
+export async function setupDeck(){
     if(deck==undefined){
         deck=new Stack();
         console.log("loading deck...")
@@ -17,6 +17,14 @@ export async function loadDeck(){
             let className = path.parse(file).name;
             deck.push(new card[className]());
         }
+    }
+    else{
+        throw new Error("nope, already set up");
+    }
+}
+export function loadDeck(){
+    if(deck==undefined){
+        throw new Error("deck's not loaded");
     }
     return deck;
 }
