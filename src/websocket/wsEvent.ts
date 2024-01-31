@@ -5,21 +5,14 @@ import { rooms } from '..';
 export let wsEvent = new EventEmitter();
 wsEvent.on("join",(ws,wsMessage)=>{
     let roomId = wsMessage.roomId as number;
-    if(isNaN(roomId) || roomId>=maxRoomNumber || roomId<0){
+    if(isNaN(roomId) || roomId>=maxRoomNumber || roomId<0 || rooms[roomId]){
         ws.send(JSON.stringify({
             succeed: false,
             error: "the room doesn't exist!"
         }));
         return;
     }
-    let room = rooms[roomId];
-    if(room==null){
-        ws.send(JSON.stringify({
-            succeed: false,
-            error: "the room doesn't exist!"
-        }));
-        return;
-    }
+    let room = rooms[roomId]!;
     if(room.roomPassword!==wsMessage.roomPassword){
         ws.send(JSON.stringify({
             succeed: false,
@@ -27,7 +20,7 @@ wsEvent.on("join",(ws,wsMessage)=>{
         }));
         return;
     }
-    if(room?.game.players.length<roomPlayerCapacity){
+    if(room.game.players.length<roomPlayerCapacity){
         let player = createPlayer(
             wsMessage.playerName,
             room?.game.players.length,
